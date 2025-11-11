@@ -11,6 +11,8 @@
 
           <VRow class="my-4" align="center">
             <VCol cols="12" md="6">
+              <!-- Demo: overall stats card (sample values passed) -->
+              <OverallStats :day-hours="27" :night-hours="7" :goal-hours="50" />
               <VCard>
                 <VCardTitle>Buttons & Icons</VCardTitle>
                 <VCardText>
@@ -24,7 +26,9 @@
                 </VCardText>
               </VCard>
             </VCol>
-
+            <VCol cols="12" md="6">
+              <h1>placeholder</h1>
+            </VCol>
             <VCol cols="12" md="6">
               <VCard>
                 <VCardTitle>Form controls</VCardTitle>
@@ -78,9 +82,11 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { useTheme } from "vuetify";
+import OverallStats from "@/components/OverallStats.vue";
 
 export default defineComponent({
   name: "HelloWorld",
+  components: { OverallStats },
   props: {
     msg: {
       type: String,
