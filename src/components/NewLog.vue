@@ -1,5 +1,5 @@
 <template>
-  <VCard class="main-card">
+  <VCard class="main-card" color="cardColor">
     <VContainer>
       <VRow>
         <VCol cols="12">
@@ -50,7 +50,7 @@
 
       <VRow class="mt-6">
         <VCol cols="12" class="d-flex justify-space-between">
-          <VBtn color="primary" @click="handleLogDrive"> Log Drive </VBtn>
+          <VBtn color="primary"> Log Drive </VBtn>
           <VBtn> Cancel </VBtn>
         </VCol>
       </VRow>
