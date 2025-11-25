@@ -9,7 +9,7 @@
             <VSwitch v-model="isDark" label="Dark" @change="toggleTheme" />
           </VToolbar>
 
-          <VRow class="my-4" align="center">
+          <VRow class="my-4">
             <VCol cols="12" md="6">
               <!-- Demo: overall stats card (sample values passed) -->
               <OverallStats :day-hours="27" :night-hours="7" :goal-hours="50" />
@@ -27,7 +27,7 @@
               </VCard>
             </VCol>
             <VCol cols="12" md="6">
-              <h1>placeholder</h1>
+              <NewLog />
             </VCol>
             <VCol cols="12" md="6">
               <VCard>
@@ -83,10 +83,11 @@
 import { defineComponent, ref } from "vue";
 import { useTheme } from "vuetify";
 import OverallStats from "@/components/OverallStats.vue";
+import NewLog from "./NewLog.vue";
 
 export default defineComponent({
   name: "HelloWorld",
-  components: { OverallStats },
+  components: { OverallStats, NewLog },
   props: {
     msg: {
       type: String,
