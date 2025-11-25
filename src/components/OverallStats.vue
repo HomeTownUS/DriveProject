@@ -1,5 +1,5 @@
 <template>
-  <VCard elevation="2" class="overall-stats">
+  <VCard elevation="2" class="overall-stats" color="cardColor">
     <VCardTitle>
       Driving Hours
       <VSpacer />
