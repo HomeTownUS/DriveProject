@@ -9,7 +9,7 @@
             <VSwitch v-model="isDark" label="Dark" @change="toggleTheme" />
           </VToolbar>
 
-          <VRow class="my-4" align="left">
+          <VRow class="my-4">
             <VCol cols="12" md="6">
               <!-- Demo: overall stats card (sample values passed) -->
               <OverallStats :day-hours="27" :night-hours="7" :goal-hours="50" />
