@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <HelloWorld msg="EPIC DRIVING" />
+    <HelloWorld msg="Welcome to the EPIC Driving App" />
   </div>
 </template>
 
