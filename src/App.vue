@@ -1,31 +1,41 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view />
-  <NewLog />
+  <v-app>
+    <v-app-bar color="primary" dark elevated dense>
+      <v-app-bar-title class="brand">
+        <v-icon left>mdi-car</v-icon>
+        Drive Project
+      </v-app-bar-title>
+
+      <v-spacer />
+
+      <v-btn variant="text" to="/">Home</v-btn>
+      <v-btn variant="text" to="/about">About</v-btn>
+    </v-app-bar>
+
+    <v-main>
+      <router-view />
+    </v-main>
+
+    <v-footer height="48" class="d-flex justify-center">
+      <div class="footer-text">© {{ year }}</div>
+    </v-footer>
+  </v-app>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+<script setup lang="ts">
+import { ref } from "vue";
+
+const year = ref(new Date().getFullYear());
+</script>
+
+<style scoped>
+.brand {
+  font-weight: 700;
+  letter-spacing: 0.4px;
 }
 
-nav {
-  padding: 30px;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
+.footer-text {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
 }
 </style>

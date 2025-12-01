@@ -18,6 +18,7 @@
             step="1"
             thumb-label="always"
             :thumb-size="12"
+            color="red"
             @update:model-value="calculateHours"
           >
             <template #thumb-label="{ modelValue }">
@@ -36,7 +37,7 @@
       <VRow>
         <VCol cols="12">
           <VSelect
-            label="Select"
+            label="Condition"
             :items="['Sunny', 'Rainy', 'Cloudy', 'Snowy']"
           ></VSelect>
         </VCol>
@@ -44,7 +45,17 @@
 
       <VRow>
         <VCol cols="12">
-          <VTextField hide-details="auto" label="Enter Date"></VTextField>
+          <VTextField
+            hide-details="auto"
+            label="Enter Date (MM/DD/YYYY)"
+            v-model="date"
+            :rules="dateRules"
+            placeholder="MM/DD/YYYY"
+            @update:model-value="onDateInput"
+            @keydown="onDateKeydown"
+            @paste="onDatePaste"
+            @blur="validateDate"
+          />
         </VCol>
       </VRow>
 
@@ -65,6 +76,11 @@ export default defineComponent({
   setup() {
     const sliderValue = ref([6, 18]);
     const totalHours = ref(0);
+    const date = ref("");
+    const dateRules = [
+      (v: string) =>
+        v === "" || isValidDate(v) || "Date must be in MM/DD/YYYY format",
+    ];
 
     const formatTime = (hour: number) => {
       const times: Record<number, string> = {
@@ -104,11 +120,78 @@ export default defineComponent({
       return totalHours.value;
     };
 
+    // Date input helpers
+    function formatDateInput(raw: string) {
+      const digits = raw.replace(/\D/g, "").slice(0, 8);
+      const parts: string[] = [];
+      if (digits.length <= 2) parts.push(digits);
+      else if (digits.length <= 4)
+        parts.push(digits.slice(0, 2), digits.slice(2));
+      else parts.push(digits.slice(0, 2), digits.slice(2, 4), digits.slice(4));
+      return parts.filter(Boolean).join("/");
+    }
+
+    function isValidDate(value: string) {
+      const m = value.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+      if (!m) return false;
+      const month = Number(m[1]);
+      const day = Number(m[2]);
+      const year = Number(m[3]);
+      if (month < 1 || month > 12) return false;
+      if (day < 1 || day > 31) return false;
+      const d = new Date(year, month - 1, day);
+      return (
+        d.getFullYear() === year &&
+        d.getMonth() === month - 1 &&
+        d.getDate() === day
+      );
+    }
+
+    function onDateInput(val: string) {
+      date.value = formatDateInput(String(val || ""));
+    }
+
+    function onDateKeydown(e: KeyboardEvent) {
+      const allowed = [
+        "Backspace",
+        "Delete",
+        "ArrowLeft",
+        "ArrowRight",
+        "Tab",
+        "Home",
+        "End",
+      ];
+      if (allowed.includes(e.key)) return;
+      if (/^\d$/.test(e.key)) return;
+      // prevent any non-digit input (including letters and symbols)
+      e.preventDefault();
+    }
+
+    function onDatePaste(e: ClipboardEvent) {
+      const data =
+        (e.clipboardData || (window as any).clipboardData)?.getData("text") ||
+        "";
+      const formatted = formatDateInput(data);
+      date.value = formatted;
+      e.preventDefault();
+    }
+
+    function validateDate() {
+      if (date.value === "") return true;
+      return isValidDate(date.value);
+    }
+
     return {
       sliderValue,
       totalHours,
       formatTime,
       calculateHours,
+      date,
+      dateRules,
+      onDateInput,
+      validateDate,
+      onDateKeydown,
+      onDatePaste,
     };
   },
 });
