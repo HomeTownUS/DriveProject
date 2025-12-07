@@ -6,14 +6,20 @@
           <VToolbar flat color="cardColor">
             <VToolbarTitle>{{ msg }}</VToolbarTitle>
             <VSpacer />
-            <VSwitch v-model="isDark" label="Dark" @change="toggleTheme" />
+            <VSwitch
+              class="colorButton"
+              v-model="isDark"
+              label="Dark"
+              @change="toggleTheme"
+            />
           </VToolbar>
 
           <VRow class="my-4">
             <VCol cols="12" md="6">
               <!-- Demo: overall stats card (sample values passed) -->
               <OverallStats :day-hours="27" :night-hours="7" :goal-hours="50" />
-              <VCard color="cardColor">
+              <!--
+	      <VCard color="cardColor">
                 <VCardTitle>Buttons & Icons</VCardTitle>
                 <VCardText>
                   <VBtn color="primary" class="ma-2" @click="clickCount++">
@@ -25,10 +31,12 @@
                   <VChip class="ma-2" color="info">Info Chip</VChip>
                 </VCardText>
               </VCard>
+	      -->
             </VCol>
             <VCol cols="12" md="6">
               <NewLog />
             </VCol>
+            <!--
             <VCol cols="12" md="6">
               <VCard color="cardColor">
                 <VCardTitle>Form controls</VCardTitle>
@@ -43,9 +51,11 @@
                 </VCardText>
               </VCard>
             </VCol>
+	    -->
           </VRow>
 
           <VRow>
+            <!--
             <VCol cols="12" md="6">
               <VCard color="cardColor">
                 <VCardTitle>Progress & Avatar</VCardTitle>
@@ -64,6 +74,7 @@
                 </VCardActions>
               </VCard>
             </VCol>
+	    -->
 
             <VCol cols="12" md="6">
               <VList>
@@ -137,5 +148,9 @@ h3 {
 }
 .align-center {
   align-items: center;
+}
+.colorButton {
+  padding-right: 20px;
+  padding-top: 20px;
 }
 </style>

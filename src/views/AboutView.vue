@@ -11,3 +11,12 @@
     </p>
   </div>
 </template>
+
+<style scoped>
+.about {
+  text-align: center;
+}
+h1 {
+  padding: 2%;
+}
+</style>
