@@ -39,6 +39,7 @@
           <VSelect
             label="Condition"
             :items="['Sunny', 'Rainy', 'Cloudy', 'Snowy']"
+            v-model="selectedWeather"
           ></VSelect>
         </VCol>
       </VRow>
@@ -61,8 +62,8 @@
 
       <VRow class="mt-6">
         <VCol cols="12" class="d-flex justify-space-between">
-          <VBtn color="primary"> Log Drive </VBtn>
-          <VBtn> Cancel </VBtn>
+          <VBtn color="primary" @click="logDrive"> Log Drive </VBtn>
+          <VBtn @click="resetForm"> Cancel </VBtn>
         </VCol>
       </VRow>
     </VContainer>
@@ -72,11 +73,24 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 
+import { db, auth } from "@/firebase";
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  increment,
+  doc,
+  setDoc,
+} from "firebase/firestore";
+
 export default defineComponent({
   setup() {
+    const selectedWeather = ref("");
     const sliderValue = ref([6, 18]);
     const totalHours = ref(0);
     const date = ref("");
+    const dayHours = ref(0);
+    const nightHours = ref(0);
     const dateRules = [
       (v: string) =>
         v === "" || isValidDate(v) || "Date must be in MM/DD/YYYY format",
@@ -117,7 +131,15 @@ export default defineComponent({
     const calculateHours = () => {
       const [start, end] = sliderValue.value;
       totalHours.value = end - start;
-      return totalHours.value;
+      dayHours.value = 0;
+      nightHours.value = 0;
+      for (let hour = start; hour < end; hour++) {
+        if (hour >= 7 && hour < 19) {
+          dayHours.value += 1;
+        } else {
+          nightHours.value += 1;
+        }
+      }
     };
 
     // Date input helpers
@@ -181,6 +203,51 @@ export default defineComponent({
       return isValidDate(date.value);
     }
 
+    const logDrive = async () => {
+      if (!auth.currentUser) {
+        alert("You must be logged in to log a drive.");
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "drivingLogs"), {
+          userId: auth.currentUser.uid,
+          startTime: sliderValue.value[0],
+          endTime: sliderValue.value[1],
+          totalHours: totalHours.value,
+          dayHours: dayHours.value,
+          nightHours: nightHours.value,
+          date: date.value,
+          createdAt: serverTimestamp(),
+          weather: selectedWeather.value,
+        });
+
+        const totalsref = doc(db, "userTotals", auth.currentUser.uid);
+        await setDoc(
+          totalsref,
+          {
+            dayHours: increment(dayHours.value),
+            nightHours: increment(nightHours.value),
+          },
+          { merge: true }
+        );
+
+        alert("Driving log added successfully!");
+        resetForm();
+      } catch (error) {
+        console.error("Error adding document: ", error);
+        alert("Failed to add driving log.");
+      }
+    };
+    const resetForm = () => {
+      sliderValue.value = [6, 18];
+      totalHours.value = 0;
+      dayHours.value = 0;
+      nightHours.value = 0;
+      date.value = "";
+      selectedWeather.value = "";
+    };
+
     return {
       sliderValue,
       totalHours,
@@ -192,6 +259,9 @@ export default defineComponent({
       validateDate,
       onDateKeydown,
       onDatePaste,
+      selectedWeather,
+      logDrive,
+      resetForm,
     };
   },
 });

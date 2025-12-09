@@ -12,7 +12,7 @@
           <VRow class="my-4">
             <VCol cols="12" md="6">
               <!-- Demo: overall stats card (sample values passed) -->
-              <OverallStats :day-hours="27" :night-hours="7" :goal-hours="50" />
+              <OverallStats />
               <VCard color="cardColor">
                 <VCardTitle>Buttons & Icons</VCardTitle>
                 <VCardText>
@@ -80,7 +80,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
 import { useTheme } from "vuetify";
 import OverallStats from "@/components/OverallStats.vue";
 import NewLog from "./NewLog.vue";

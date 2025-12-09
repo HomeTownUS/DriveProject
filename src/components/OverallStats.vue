@@ -51,36 +51,58 @@
 
 <script lang="ts">
 import { defineComponent, computed } from "vue";
+import { ref, onMounted } from "vue";
+import { db, auth } from "@/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 export default defineComponent({
   name: "OverallStats",
-  props: {
-    dayHours: {
-      type: Number,
-      default: 12,
-    },
-    nightHours: {
-      type: Number,
-      default: 3,
-    },
-    goalHours: {
-      type: Number,
-      default: 50,
-    },
-  },
-  setup(props) {
-    const totalHours = computed(() => props.dayHours + props.nightHours);
+
+  setup() {
+    const dayHours = ref(0);
+    const nightHours = ref(0);
+    const goalHours = ref(50);
+    const totalHours = computed(() => dayHours.value + nightHours.value);
     const remainingHours = computed(() =>
-      Math.max(0, props.goalHours - totalHours.value)
+      Math.max(0, goalHours.value - totalHours.value)
     );
     const progressPct = computed(() =>
-      Math.min(100, Math.round((totalHours.value / props.goalHours) * 100))
+      Math.min(100, Math.round((totalHours.value / goalHours.value) * 100))
     );
+    const fetchTotals = async () => {
+      try {
+        if (!auth.currentUser) return;
+        const totalsRef = doc(db, "userTotals", auth.currentUser.uid);
+        const snap = await getDoc(totalsRef);
+        if (snap.exists()) {
+          const data = snap.data();
+          dayHours.value = data.dayHours || 0;
+          nightHours.value = data.nightHours || 0;
+        }
+      } catch (error) {
+        console.error("Error fetching totals: ", error);
+      }
+    };
+    onMounted(async () => {
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          fetchTotals();
+        } else {
+          console.log("No user is signed in.");
+          dayHours.value = 0;
+          nightHours.value = 0;
+        }
+      });
+    });
 
     return {
+      dayHours,
+      nightHours,
+      goalHours,
       totalHours,
       remainingHours,
       progressPct,
+      fetchTotals,
     };
   },
 });
