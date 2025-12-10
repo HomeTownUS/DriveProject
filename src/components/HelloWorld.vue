@@ -162,12 +162,6 @@ export default defineComponent({
 
     const overallStatsRef = ref();
 
-    const theme = useTheme();
-
-    const toggleTheme = () => {
-      theme.global.name.value = isDark.value ? "dark" : "light";
-    };
-
     const incrementProgress = () => {
       progress.value = Math.min(100, progress.value + 10);
     };
