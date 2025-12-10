@@ -84,7 +84,8 @@ import {
 } from "firebase/firestore";
 
 export default defineComponent({
-  setup() {
+  emits: ["log-saved"],
+  setup(_props, { emit }) {
     const selectedWeather = ref("");
     const sliderValue = ref([6, 18]);
     const totalHours = ref(0);
@@ -233,6 +234,7 @@ export default defineComponent({
         );
 
         alert("Driving log added successfully!");
+        emit("log-saved"); // Notify parent that a log was saved
         resetForm();
       } catch (error) {
         console.error("Error adding document: ", error);

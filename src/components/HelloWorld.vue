@@ -17,7 +17,7 @@
           <VRow class="my-4">
             <VCol cols="12" md="6">
               <!-- Demo: overall stats card (sample values passed) -->
-              <OverallStats />
+              <OverallStats ref="overallStatsRef" />
               <VCard color="cardColor"> </VCard>
               <!--
 	      <VCard color="cardColor">
@@ -35,7 +35,7 @@
 	      -->
             </VCol>
             <VCol cols="12" md="6">
-              <NewLog />
+              <NewLog @log-saved="handleLogSaved" />
             </VCol>
             <!--
             <VCol cols="12" md="6">
@@ -92,7 +92,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent, ref } from "vue";
 import { useTheme } from "vuetify";
 import OverallStats from "@/components/OverallStats.vue";
 import NewLog from "./NewLog.vue";
@@ -114,6 +114,7 @@ export default defineComponent({
     const checked = ref(false);
     const progress = ref(25);
     const items = ref(["First item", "Second item", "Third item"]);
+    const overallStatsRef = ref();
 
     const theme = useTheme();
 
@@ -123,6 +124,13 @@ export default defineComponent({
 
     const incrementProgress = () => {
       progress.value = Math.min(100, progress.value + 10);
+    };
+
+    const handleLogSaved = () => {
+      // When a new log is saved, refresh the stats
+      if (overallStatsRef.value) {
+        overallStatsRef.value.fetchTotals();
+      }
     };
 
     return {
@@ -135,6 +143,8 @@ export default defineComponent({
       items,
       toggleTheme,
       incrementProgress,
+      overallStatsRef,
+      handleLogSaved,
     };
   },
 });
