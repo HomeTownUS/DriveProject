@@ -235,6 +235,7 @@ export default defineComponent({
           {
             dayHours: increment(dayHours.value),
             nightHours: increment(nightHours.value),
+            name: auth.currentUser.displayName,
           },
           { merge: true }
         );
