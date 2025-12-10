@@ -156,6 +156,7 @@ export default defineComponent({
         } else {
           console.log("No user is signed in.");
           unsubscribe.value = null;
+          logs.value = [];
         }
       });
     });
