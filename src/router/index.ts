@@ -28,7 +28,7 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 });
-
+/*
 // Dev helper: if you open the app with `?showAuth=true` the first navigation
 // will redirect once to the auth page so you can test the login screen during
 // development without forcing it for all users.
@@ -51,6 +51,6 @@ try {
   }
 } catch (e) {
   // ignore URL parsing errors in odd environments
-}
+}*/
 
 export default router;
