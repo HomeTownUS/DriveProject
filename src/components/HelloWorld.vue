@@ -6,12 +6,6 @@
           <VToolbar flat color="cardColor">
             <VToolbarTitle>{{ msg }}</VToolbarTitle>
             <VSpacer />
-            <VSwitch
-              class="colorButton"
-              v-model="isDark"
-              label="Dark"
-              @change="toggleTheme"
-            />
           </VToolbar>
 
           <VRow class="my-4">
@@ -102,7 +96,6 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, computed } from "vue";
-import { useTheme } from "vuetify";
 import OverallStats from "@/components/OverallStats.vue";
 import NewLog from "./NewLog.vue";
 import {
@@ -113,7 +106,6 @@ import {
 } from "firebase/firestore";
 import { db, auth } from "@/firebase";
 import { Unsubscribe } from "firebase/auth";
-import { VListItemSubtitle } from "vuetify/lib/components";
 
 export default defineComponent({
   name: "HelloWorld",
@@ -125,7 +117,6 @@ export default defineComponent({
     },
   },
   setup() {
-    const isDark = ref(false);
     const clickCount = ref(0);
     const text = ref("");
     const selected = ref("");
@@ -189,14 +180,12 @@ export default defineComponent({
     };
 
     return {
-      isDark,
       clickCount,
       text,
       selected,
       checked,
       progress,
       items,
-      toggleTheme,
       incrementProgress,
       overallStatsRef,
       handleLogSaved,
@@ -214,9 +203,5 @@ h3 {
 }
 .align-center {
   align-items: center;
-}
-.colorButton {
-  padding-right: 20px;
-  padding-top: 20px;
 }
 </style>
