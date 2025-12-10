@@ -58,7 +58,7 @@ import { doc, getDoc } from "firebase/firestore";
 export default defineComponent({
   name: "OverallStats",
 
-  setup() {
+  setup(props, { expose }) {
     const dayHours = ref(0);
     const nightHours = ref(0);
     const goalHours = ref(50);
@@ -93,6 +93,11 @@ export default defineComponent({
           nightHours.value = 0;
         }
       });
+    });
+
+    // Expose fetchTotals so parent components can call it
+    expose({
+      fetchTotals,
     });
 
     return {

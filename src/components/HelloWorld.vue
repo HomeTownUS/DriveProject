@@ -11,7 +11,7 @@
           <VRow class="my-4">
             <VCol cols="12" md="6">
               <!-- Demo: overall stats card (sample values passed) -->
-              <OverallStats />
+              <OverallStats ref="overallStatsRef" />
               <VCard color="cardColor"> </VCard>
               <!--
 	      <VCard color="cardColor">
@@ -29,7 +29,7 @@
 	      -->
             </VCol>
             <VCol cols="12" md="6">
-              <NewLog />
+              <NewLog @log-saved="handleLogSaved" />
             </VCol>
             <!--
             <VCol cols="12" md="6">
@@ -160,8 +160,23 @@ export default defineComponent({
       });
     });
 
+    const overallStatsRef = ref();
+
+    const theme = useTheme();
+
+    const toggleTheme = () => {
+      theme.global.name.value = isDark.value ? "dark" : "light";
+    };
+
     const incrementProgress = () => {
       progress.value = Math.min(100, progress.value + 10);
+    };
+
+    const handleLogSaved = () => {
+      // When a new log is saved, refresh the stats
+      if (overallStatsRef.value) {
+        overallStatsRef.value.fetchTotals();
+      }
     };
 
     return {
@@ -172,6 +187,8 @@ export default defineComponent({
       progress,
       items,
       incrementProgress,
+      overallStatsRef,
+      handleLogSaved,
     };
   },
 });
