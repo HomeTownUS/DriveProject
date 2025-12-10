@@ -192,8 +192,10 @@ export default defineComponent({
 
     function onDatePaste(e: ClipboardEvent) {
       const data =
-        (e.clipboardData || (window as any).clipboardData)?.getData("text") ||
-        "";
+        (
+          e.clipboardData ||
+          (window as Window & { clipboardData?: DataTransfer }).clipboardData
+        )?.getData("text") || "";
       const formatted = formatDateInput(data);
       date.value = formatted;
       e.preventDefault();

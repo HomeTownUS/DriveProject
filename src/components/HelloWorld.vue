@@ -13,66 +13,16 @@
               <!-- Demo: overall stats card (sample values passed) -->
               <OverallStats ref="overallStatsRef" />
               <VCard color="cardColor"> </VCard>
-              <!--
-	      <VCard color="cardColor">
-                <VCardTitle>Buttons & Icons</VCardTitle>
-                <VCardText>
-                  <VBtn color="primary" class="ma-2" @click="clickCount++">
-                    Primary ({{ clickCount }})
-                  </VBtn>
-                  <VBtn color="secondary" class="ma-2" icon>
-                    <VIcon>mdi-heart</VIcon>
-                  </VBtn>
-                  <VChip class="ma-2" color="info">Info Chip</VChip>
-                </VCardText>
-              </VCard>
-	      -->
+              <Leaderboard />
             </VCol>
             <VCol cols="12" md="6">
               <NewLog @log-saved="handleLogSaved" />
             </VCol>
-            <!--
-            <VCol cols="12" md="6">
-              <VCard color="cardColor">
-                <VCardTitle>Form controls</VCardTitle>
-                <VCardText>
-                  <VTextField v-model="text" label="Your name" />
-                  <VSelect
-                    v-model="selected"
-                    :items="['One', 'Two', 'Three']"
-                    label="Choose"
-                  />
-                  <VCheckbox v-model="checked" label="Agree?" />
-                </VCardText>
-              </VCard>
-            </VCol>
-	    -->
           </VRow>
 
           <VRow>
-            <!--
-            <VCol cols="12" md="6">
-              <VCard color="cardColor">
-                <VCardTitle>Progress & Avatar</VCardTitle>
-                <VCardText class="d-flex align-center">
-                  <VProgressCircular
-                    :size="64"
-                    :value="progress"
-                    class="ma-2"
-                  />
-                  <VAvatar size="64" class="ma-2">
-                    <img src="../assets/logo.png" alt="logo" />
-                  </VAvatar>
-                </VCardText>
-                <VCardActions>
-                  <VBtn text @click="incrementProgress">Increase</VBtn>
-                </VCardActions>
-              </VCard>
-            </VCol>
-	    -->
-
             <VCol cols="12" md="12">
-              <VList>
+              <VList style="background-color: #eae7dc">
                 <VListItem v-for="item in items" :key="item">
                   <VListItemTitle
                     >Drive: {{ item.startTime }} to {{ item.endTime }} for a
@@ -98,6 +48,7 @@
 import { defineComponent, ref, onMounted, computed } from "vue";
 import OverallStats from "@/components/OverallStats.vue";
 import NewLog from "./NewLog.vue";
+import Leaderboard from "./Leaderboard.vue";
 import {
   collection,
   onSnapshot,
@@ -109,7 +60,7 @@ import { Unsubscribe } from "firebase/auth";
 
 export default defineComponent({
   name: "HelloWorld",
-  components: { OverallStats, NewLog },
+  components: { OverallStats, NewLog, Leaderboard },
   props: {
     msg: {
       type: String,
@@ -129,6 +80,11 @@ export default defineComponent({
 
     const logCollection = collection(db, "drivingLogs");
 
+    interface Log {
+      id: string;
+      [key: string]: unknown;
+    }
+
     const logs = ref<any[]>([]);
 
     const fetchLogs = async () => {
@@ -136,6 +92,7 @@ export default defineComponent({
         //set beverages if beverages are not empty
         if (!qs.empty) {
           logs.value = qs.docs.map((qd: QueryDocumentSnapshot) => ({
+            id: qd.id,
             userId: qd.data().userId,
             startTime: qd.data().startTime,
             endTime: qd.data().endTime,
