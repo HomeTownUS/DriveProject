@@ -208,6 +208,10 @@ export default defineComponent({
         alert("You must be logged in to log a drive.");
         return;
       }
+      if (totalHours.value === 0) {
+        alert("You must have at least 1 hour to log a drive.");
+        return;
+      }
 
       try {
         await addDoc(collection(db, "drivingLogs"), {
