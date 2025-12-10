@@ -1,6 +1,7 @@
 <template>
-  <v-list style="background-color: #eae7dc" lines="one"
-    ><v-list-item v-for="(user, index) in users" :key="user.id">
+  <v-list style="background-color: #eae7dc" lines="one">
+    <h3>Leaderboard</h3>
+    <v-list-item v-for="(user, index) in users" :key="user.id">
       <v-list-item-content>
         <v-list-item-title>
           {{ index + 1 }}. {{ user.name }} - {{ user.totalHours }} Hours
@@ -69,5 +70,8 @@ export default defineComponent({
 <style>
 .fullList {
   background-color: #eae7dc;
+}
+h3 {
+  text-align: center;
 }
 </style>

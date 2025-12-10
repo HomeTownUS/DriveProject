@@ -23,6 +23,7 @@
           <VRow>
             <VCol cols="12" md="12">
               <VList style="background-color: #eae7dc">
+                <h3>Logs</h3>
                 <VListItem v-for="item in items" :key="item">
                   <VListItemTitle
                     >Drive: {{ item.startTime }} to {{ item.endTime }} for a
@@ -148,7 +149,7 @@ export default defineComponent({
 
 <style scoped>
 h3 {
-  margin: 40px 0 0;
+  text-align: center;
 }
 .d-flex {
   display: flex;
