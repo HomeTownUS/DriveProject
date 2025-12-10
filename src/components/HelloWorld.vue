@@ -18,7 +18,7 @@
             <VCol cols="12" md="6">
               <!-- Demo: overall stats card (sample values passed) -->
               <OverallStats />
-              <VCard color="cardColor">
+              <VCard color="cardColor"> </VCard>
               <!--
 	      <VCard color="cardColor">
                 <VCardTitle>Buttons & Icons</VCardTitle>
