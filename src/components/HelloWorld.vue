@@ -77,10 +77,19 @@
             </VCol>
 	    -->
 
-            <VCol cols="12" md="6">
+            <VCol cols="12" md="12">
               <VList>
                 <VListItem v-for="item in items" :key="item">
-                  <VListItemTitle>{{ item }}</VListItemTitle>
+                  <VListItemTitle
+                    >Drive: {{ item.startTime }} to {{ item.endTime }} for a
+                    total of {{ item.totalHours }} hours on
+                    {{ item.date }}.</VListItemTitle
+                  >
+                  <VListItemSubtitle
+                    >Day hours: {{ item.dayHours }} Night hours:
+                    {{ item.nightHours }} Weather:
+                    {{ item.weather }}</VListItemSubtitle
+                  >
                 </VListItem>
               </VList>
             </VCol>
@@ -92,10 +101,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent, ref, onMounted, computed } from "vue";
 import { useTheme } from "vuetify";
 import OverallStats from "@/components/OverallStats.vue";
 import NewLog from "./NewLog.vue";
+import {
+  collection,
+  onSnapshot,
+  QuerySnapshot,
+  QueryDocumentSnapshot,
+} from "firebase/firestore";
+import { db, auth } from "@/firebase";
+import { Unsubscribe } from "firebase/auth";
+import { VListItemSubtitle } from "vuetify/lib/components";
 
 export default defineComponent({
   name: "HelloWorld",
@@ -113,7 +131,43 @@ export default defineComponent({
     const selected = ref("");
     const checked = ref(false);
     const progress = ref(25);
-    const items = ref(["First item", "Second item", "Third item"]);
+    const unsubscribe = ref<Unsubscribe | null>(null);
+    const items = computed(() =>
+      logs.value.filter((log) => log.userId === auth.currentUser?.uid)
+    );
+
+    const logCollection = collection(db, "drivingLogs");
+
+    const logs = ref<any[]>([]);
+
+    const fetchLogs = async () => {
+      unsubscribe.value = onSnapshot(logCollection, (qs: QuerySnapshot) => {
+        //set beverages if beverages are not empty
+        if (!qs.empty) {
+          logs.value = qs.docs.map((qd: QueryDocumentSnapshot) => ({
+            userId: qd.data().userId,
+            startTime: qd.data().startTime,
+            endTime: qd.data().endTime,
+            totalHours: qd.data().totalHours,
+            dayHours: qd.data().dayHours,
+            nightHours: qd.data().nightHours,
+            date: qd.data().date,
+            createdAt: qd.data().createdAt,
+            weather: qd.data().weather,
+          }));
+        }
+      });
+    };
+    onMounted(async () => {
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          fetchLogs();
+        } else {
+          console.log("No user is signed in.");
+          unsubscribe.value = null;
+        }
+      });
+    });
 
     const theme = useTheme();
 
